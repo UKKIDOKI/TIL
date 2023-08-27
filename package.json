@@ -1,0 +1,25 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "개인블로그",
+  "main": "index.js",
+  "devDependencies": {
+    "vuepress": "^2.0.0-beta.66"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UKKIDOKI/blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UKKIDOKI/blog/issues"
+  },
+  "homepage": "https://github.com/UKKIDOKI/blog#readme"
+}
