@@ -1,81 +1,137 @@
-import { defineUserConfig } from 'vuepress'
+import process from 'node:process'
+import { defineUserConfig } from '@vuepress/cli'
+import { defaultTheme } from '@vuepress/theme-default'
+import { getDirname, path } from '@vuepress/utils'
+import {
+  head,
+  navbarEn,
+  sidebarEn,
+} from './configs/index'
+
+const __dirname = getDirname(import.meta.url)
+const isProd = process.env.NODE_ENV === 'production'
 
 export default defineUserConfig({
-  lang: 'en-US',
-  title: 'Hello VuePress',
-  description: 'Just playing around',
-})
+  // set site base to default value
+  base: '/blog/',
 
-// export.default {
-//     title: "title",
-//     description: "desc",
-//     themeConfig: {
-//       nav: [{ text: "Github", link: "https://github.com/UKKIDOKI" }],
-//       sidebar: getSidebarArr()
-//     },
-//     //가장 중요한 부분!
-//     //<username>.github.io 뒤에 주소가 붙으시면
-//     //아래와 같이 뒤 붙는 주소를 넣어주셔야합니다.
-//     //안그러면 css 가 반영이 안되요!! 꼭꼭 넣어주세요
-//     base: "/blog/"
-//   };
-  
-//   function getSidebarArr() {
-//     var fs = require("fs");
-//     var docsPath = __dirname + "/../";
-//     var sidebarArr = [];
-//     var HomeFilelist = [];
-//     var filelist = fs.readdirSync(docsPath);
-//     filelist.forEach(function(file) {
-//       if (file === ".vuepress") return;
-//       var stat = fs.lstatSync(docsPath + "/" + file);
-//       if (stat.isDirectory()) {
-//         // directory
-//         // title is file, children is readdirSync
-//         var docsFolderPath = docsPath + "/" + file;
-//         var list = fs.readdirSync(docsFolderPath);
-//         sidebarArr.push(makeSidebarObject(file, list));
-//       } else {
-//         // NOT directory
-//         // title is '/' children is file
-//         HomeFilelist.push(file);
-//       }
-//     });
-//     sidebarArr.unshift(makeSidebarObject("", HomeFilelist));
-//     return sidebarArr;
-//   }
-//   function makeSidebarObject(folder, mdfileList) {
-//     var path = folder ? "/" + folder + "/" : "/";
-//     mdfileList = aheadOfReadme(mdfileList);
-//     var tmpMdfileList = [];
-//     // remove .md, add Path
-//     mdfileList.forEach(function(mdfile) {
-//       if (mdfile.substr(-3) === ".md") {
-//         mdfile = mdfile.slice(0, -3) === "README" ? "" : mdfile.slice(0, -3);
-//         tmpMdfileList.push(path + mdfile);
-//       }
-//     });
-//     mdfileList = tmpMdfileList;
-//     // remove folder prefix number
-//     if (folder) {
-//       var dotIdx = folder.indexOf(".");
-//       var title = Number(folder.substr(0, dotIdx))
-//         ? folder.substr(dotIdx + 1)
-//         : folder;
-//     } else {
-//       title = "HOME";
-//     }
-//     return {
-//       title: title,
-//       children: mdfileList
-//     };
-//   }
-//   function aheadOfReadme(arr) {
-//     // ['1.test.md','README.md'] => ['README.md','1.test.md']
-//     var readmeIdx = arr.indexOf("README.md");
-//     if (readmeIdx > 0) {
-//       arr.unshift(arr.splice(readmeIdx, 1)[0]);
-//     }
-//     return arr;
-//   }
-   
+  // extra tags in `<head>`
+  head,
+
+  // site-level locales config
+  locales: {
+    '/': {
+      lang: 'en-KR',
+      title: 'Today I Learned',
+      description: '공부기록',
+    },
+  },
+
+  // configure default theme
+  theme: defaultTheme({
+    logo: '/images/hero.png',
+    repo: 'vuepress/vuepress-next',
+    docsDir: 'docs',
+
+    // theme-level locales config
+    locales: {
+      /**
+       * English locale config
+       *
+       * As the default locale of @vuepress/theme-default is English,
+       * we don't need to set all of the locale fields
+       */
+      '/': {
+        // navbar
+        navbar: navbarEn,
+        // sidebar
+        sidebar: sidebarEn,
+        // page meta
+        editLinkText: 'Edit this page on GitHub',
+      },
+
+      /**
+       * Chinese locale config
+       */
+    },
+
+    themePlugins: {
+      // only enable git plugin in production mode
+      git: isProd,
+      // use shiki plugin in production mode instead
+      prismjs: !isProd,
+    },
+  }),
+
+  // configure markdown
+  markdown: {
+    importCode: {
+      handleImportPath: (str) =>
+        str.replace(/^@vuepress/, path.resolve(__dirname, '../../ecosystem')),
+    },
+  },
+
+  // use plugins
+  plugins: [
+    // docsearchPlugin({
+    //   appId: '34YFD9IUQ2',
+    //   apiKey: '9a9058b8655746634e01071411c366b8',
+    //   indexName: 'vuepress',
+    //   searchParameters: {
+    //     facetFilters: ['tags:v2'],
+    //   },
+    //   locales: {
+    //     '/zh/': {
+    //       placeholder: '搜索文档',
+    //       translations: {
+    //         button: {
+    //           buttonText: '搜索文档',
+    //           buttonAriaLabel: '搜索文档',
+    //         },
+    //         modal: {
+    //           searchBox: {
+    //             resetButtonTitle: '清除查询条件',
+    //             resetButtonAriaLabel: '清除查询条件',
+    //             cancelButtonText: '取消',
+    //             cancelButtonAriaLabel: '取消',
+    //           },
+    //           startScreen: {
+    //             recentSearchesTitle: '搜索历史',
+    //             noRecentSearchesText: '没有搜索历史',
+    //             saveRecentSearchButtonTitle: '保存至搜索历史',
+    //             removeRecentSearchButtonTitle: '从搜索历史中移除',
+    //             favoriteSearchesTitle: '收藏',
+    //             removeFavoriteSearchButtonTitle: '从收藏中移除',
+    //           },
+    //           errorScreen: {
+    //             titleText: '无法获取结果',
+    //             helpText: '你可能需要检查你的网络连接',
+    //           },
+    //           footer: {
+    //             selectText: '选择',
+    //             navigateText: '切换',
+    //             closeText: '关闭',
+    //             searchByText: '搜索提供者',
+    //           },
+    //           noResultsScreen: {
+    //             noResultsText: '无法找到相关结果',
+    //             suggestedQueryText: '你可以尝试查询',
+    //             reportMissingResultsText: '你认为该查询应该有结果？',
+    //             reportMissingResultsLinkText: '点击反馈',
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // }),
+    // googleAnalyticsPlugin({
+    //   // we have multiple deployments, which would use different id
+    //   id: process.env.DOCS_GA_ID ?? '',
+    // }),
+    // registerComponentsPlugin({
+    //   componentsDir: path.resolve(__dirname, './components'),
+    // }),
+    // // only enable shiki plugin in production mode
+    // isProd ? shikiPlugin({ theme: 'dark-plus' }) : [],
+  ],
+})
