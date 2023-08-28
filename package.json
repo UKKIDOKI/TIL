@@ -1,5 +1,5 @@
 {
-  "name": "blog",
+  "name": "TIL",
   "version": "1.0.0",
   "description": "개인블로그",
   "main": "index.js",
@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/UKKIDOKI/blog/issues"
+    "url": "https://github.com/UKKIDOKI/TIL/issues"
   },
-  "homepage": "https://github.com/UKKIDOKI/blog#readme"
+  "homepage": "https://github.com/UKKIDOKI/TIL#readme"
 }
